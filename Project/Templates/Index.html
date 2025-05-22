@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Lampu Jalan Pintar</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+      :root {
+        --bg: #0f172a;
+        --card: #1e293b;
+        --text: #f1f5f9;
+        --green: #22c55e;
+        --yellow: #facc15;
+        --red: #ef4444;
+        --blue: #3b82f6;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        background: linear-gradient(to right, #1e40af, #3b82f6);
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 2px 5px #0005;
+      }
+
+      header h1 {
+        margin: 0;
+        font-size: 1.8rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        padding: 30px;
+        max-width: 1000px;
+        margin: auto;
+      }
+
+      .card {
+        background-color: var(--card);
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 0 10px #0003;
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+      }
+
+      .icon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+
+      .value {
+        font-size: 1.8rem;
+        font-weight: 600;
+      }
+
+      .status-green {
+        color: var(--green);
+      }
+      .status-yellow {
+        color: var(--yellow);
+      }
+      .status-red {
+        color: var(--red);
+      }
+
+      button {
+        display: block;
+        margin: 20px auto 40px;
+        background-color: var(--blue);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+
+      button:hover {
+        background-color: #2563eb;
+      }
+
+      #toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #22c55e;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 6px;
+        display: none;
+        box-shadow: 0 0 10px #0005;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>📡 Dashboard Lampu Jalan Pintar</h1>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <div class="icon"><i data-feather="zap"></i></div>
+        <h3>Status Lampu</h3>
+        <div class="value" id="lampu">-</div>
+      </div>
+      <div class="card">
+        <div class="icon"><i data-feather="activity"></i></div>
+        <h3>Deteksi Gerakan</h3>
+        <div class="value" id="gerakan">-</div>
+      </div>
+      <div class="card">
+        <div class="icon"><i data-feather="sun"></i></div>
+        <h3>Cahaya Sekitar</h3>
+        <div class="value" id="cahaya">-</div>
+      </div>
+      <div class="card">
+        <div class="icon"><i data-feather="thermometer"></i></div>
+        <h3>Suhu</h3>
+        <div class="value" id="suhu">-</div>
+      </div>
+    </div>
+
+    <button onclick="simpanLog()">📝 Simpan Log</button>
+
+    <div id="toast">Log berhasil disimpan!</div>
+
+    <script>
+      feather.replace();
+
+      const backendURL = "http://localhost:5000";
+
+      async function updateData() {
+        try {
+          const res = await fetch(`${backendURL}/monitor`);
+          const data = await res.json();
+          updateUI("lampu", data.lampu);
+          updateUI("gerakan", data.gerakan);
+          updateUI("cahaya", data.cahaya);
+          document.getElementById("suhu").innerText = data.suhu + "°C";
+        } catch (err) {
+          console.error("Gagal ambil data:", err);
+        }
+      }
+
+      function updateUI(id, value) {
+        const el = document.getElementById(id);
+        el.innerText = value;
+
+        // Tambahkan warna status
+        el.classList.remove("status-green", "status-yellow", "status-red");
+        if (
+          value.toLowerCase().includes("terang") ||
+          value.toLowerCase().includes("aktif")
+        ) {
+          el.classList.add("status-green");
+        } else if (
+          value.toLowerCase().includes("redup") ||
+          value.toLowerCase().includes("sedang")
+        ) {
+          el.classList.add("status-yellow");
+        } else {
+          el.classList.add("status-red");
+        }
+      }
+
+      function simpanLog() {
+        fetch(`${backendURL}/save-log`, { method: "POST" })
+          .then((res) => res.json())
+          .then((res) => {
+            showToast();
+          })
+          .catch((err) => alert("❌ Gagal simpan log"));
+      }
+
+      function showToast() {
+        const toast = document.getElementById("toast");
+        toast.style.display = "block";
+        setTimeout(() => (toast.style.display = "none"), 3000);
+      }
+
+      setInterval(updateData, 3000);
+      updateData();
+    </script>
+  </body>
+</html>

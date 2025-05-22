@@ -1,0 +1,45 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background: #003366;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+main {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #ccc;
+}
+
+.log {
+  background: white;
+  margin: 20px;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #ccc;
+}
+
+.log ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.log li {
+  margin-bottom: 5px;
+}
