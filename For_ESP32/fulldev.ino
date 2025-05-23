@@ -21,7 +21,7 @@ DHTesp dht;
 // --- Konfigurasi Batas dan Durasi ---
 const int ldrTerangMaksimal = 600;  // LDR <= ini dianggap terang maksimal (LED mati)
 const int ldrGelapMaksimal = 4095;  // LDR = ini dianggap gelap (LED 60%)
-const int jarakDeteksi = 18;        // Batas jarak deteksi objek (cm)
+const int jarakDeteksi = 15;        // Batas jarak deteksi objek (cm)
 
 // Durasi dan frekuensi buzzer
 const int buzzerLdrFreq = 1000;
