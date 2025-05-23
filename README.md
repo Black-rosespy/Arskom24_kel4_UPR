@@ -1,6 +1,6 @@
 ---
 
-# 💡 Smart Streetlight System - ESP32 + Web Dashboard
+# 💡 LAMPU JALAN PINTAR DAN PEMANTAUAN LINGKUNGAN BERBASIS IOT  - ESP32 + Web Dashboard
 
 Sistem ini adalah proyek IoT berbasis ESP32 yang memantau dan mengontrol lampu jalan pintar menggunakan sensor suhu (DHT11), sensor cahaya (LDR), dan sensor jarak (ultrasonik), dengan fitur buzzer notifikasi. Data dikirim ke backend Python Flask dan ditampilkan secara real-time di dashboard web.
 
