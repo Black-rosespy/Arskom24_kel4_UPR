@@ -1,4 +1,4 @@
-// Fungsi untuk menampilkan waktu sekarang
+// Fungsi buat update waktu sekarang di UI (opsional)
 function updateTime() {
   const now = new Date();
   document.getElementById("currentTime").textContent = now.toLocaleString();
@@ -6,31 +6,33 @@ function updateTime() {
 setInterval(updateTime, 1000);
 updateTime();
 
-// Simulasi data dari ESP32
+// Fungsi utama untuk update elemen dashboard berdasarkan data
 function updateDashboard(data) {
-  // Lampu
+  // Update status lampu
   const lampu = document.getElementById("lampuStatus");
   if (data.lampu === "terang") lampu.textContent = "🟢 Terang";
   else if (data.lampu === "redup") lampu.textContent = "🟡 Redup";
   else lampu.textContent = "🔴 Mati";
 
-  // Cahaya
+  // Update nilai lux & status cahaya
   document.getElementById("cahayaLux").textContent = `${data.lux} lux`;
   document.getElementById("cahayaStatus").textContent =
     data.lux > 50 ? "Terang" : "Gelap";
 
-  // Gerakan
+  // Update status gerakan
   document.getElementById("gerakanStatus").textContent = data.gerakan
     ? "🟠 Gerakan Terdeteksi"
     : "🔵 Tidak Ada Gerakan";
+
+  // Tampilkan waktu gerakan jika ada
   document.getElementById("waktuGerak").textContent = data.gerakan
     ? `Waktu: ${new Date().toLocaleTimeString()}`
     : "--";
 
-  // Suhu
+  // Update suhu
   document.getElementById("suhuNilai").textContent = `${data.suhu} °C`;
 
-  // Simpan log terakhir tapi belum ditampilkan
+  // Simpan deskripsi log terakhir
   if (data.gerakan) {
     lastLogText = "Gerakan terdeteksi – Lampu menyala terang";
   } else if (data.lux > 50) {
@@ -40,14 +42,15 @@ function updateDashboard(data) {
   }
 }
 
+// Event saat tombol Simpan Log diklik
 document.getElementById("simpanLogBtn").addEventListener("click", () => {
   const logList = document.getElementById("logList");
   const li = document.createElement("li");
   li.textContent = `[${new Date().toLocaleTimeString()}] ${lastLogText}`;
-  logList.prepend(li);
+  logList.prepend(li); // Tambahkan log ke atas
 });
 
-// Simulasi data per 5 detik
+// Simulasi data sensor per 5 detik (jika ESP32 belum tersambung)
 setInterval(() => {
   const simulatedData = {
     lampu:
@@ -58,6 +61,7 @@ setInterval(() => {
     log: "",
   };
 
+  // Tentukan pesan log berdasarkan kondisi
   if (simulatedData.gerakan) {
     simulatedData.log = "Gerakan terdeteksi – Lampu menyala terang";
   } else if (simulatedData.lux > 50) {
@@ -66,7 +70,9 @@ setInterval(() => {
     simulatedData.log = "Tidak ada gerakan – Lampu meredup";
   }
 
+  // Update dashboard dengan data simulasi
   updateDashboard(simulatedData);
 }, 5000);
 
+// Variabel global untuk simpan deskripsi log terakhir
 let lastLogText = "";
