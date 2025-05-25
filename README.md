@@ -109,6 +109,8 @@ python Backend.py
 * Untuk analogWrite() di ESP32, kamu bisa gunakan ledcWrite() karena ESP32 tidak support analogWrite() secara langsung.
 * Pastikan IP server (pada serverName) cocok dengan IP lokal PC kamu.
 * Tambahkan file db.py untuk setup database SQLite, jika belum dibuat.
+* Untuk memastikan dashboard dapat dibuka langsung tanpa server lokal, CSS dan JS disisipkan langsung ke dalam file HTML.
+  Namun, file `style.css` dan `script.js` tetap disediakan di folder `static/` sesuai struktur modular yang dijelaskan dalam laporan.
 
 ---
 
