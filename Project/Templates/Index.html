@@ -1,15 +1,24 @@
 <!DOCTYPE html>
 <html lang="id">
-  <head>
+  <!--Catatan: CSS utama disisipkan inline agar dashboard tetap berfungsi saat dibuka langsung tanpa server.
+      Namun, file style.css versi terpisah tetap tersedia di folder /static, sesuai dokumentasi laporan.-->
+  <head> 
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard Lampu Jalan Pintar</title>
+
+    <!-- Import font Poppins dari Google Fonts -->
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Icon Feather untuk UI -->
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
+    <!-- Styling langsung di dalam HTML -->
     <style>
+      /* CSS bawaan langsung (bisa juga pisah ke style.css) */
       :root {
         --bg: #0f172a;
         --card: #1e293b;
@@ -112,27 +121,39 @@
       }
     </style>
   </head>
+  <!--
+  Catatan: JavaScript utama disisipkan inline demi kompatibilitas.
+  script.js juga tersedia di folder /static jika ingin digunakan sebagai file terpisah.-->
   <body>
+    <!-- Judul Dashboard -->
     <header>
       <h1>📡 Dashboard Lampu Jalan Pintar</h1>
     </header>
 
+    <!-- Grid untuk kartu data -->
     <div class="grid">
+      <!-- Kartu Status Lampu -->
       <div class="card">
         <div class="icon"><i data-feather="zap"></i></div>
         <h3>Status Lampu</h3>
         <div class="value" id="lampu">-</div>
       </div>
+
+      <!-- Kartu Gerakan -->
       <div class="card">
         <div class="icon"><i data-feather="activity"></i></div>
         <h3>Deteksi Gerakan</h3>
         <div class="value" id="gerakan">-</div>
       </div>
+
+      <!-- Kartu Cahaya -->
       <div class="card">
         <div class="icon"><i data-feather="sun"></i></div>
         <h3>Cahaya Sekitar</h3>
         <div class="value" id="cahaya">-</div>
       </div>
+
+      <!-- Kartu Suhu -->
       <div class="card">
         <div class="icon"><i data-feather="thermometer"></i></div>
         <h3>Suhu</h3>
@@ -140,15 +161,20 @@
       </div>
     </div>
 
+    <!-- Tombol untuk menyimpan log -->
     <button onclick="simpanLog()">📝 Simpan Log</button>
 
+    <!-- Notifikasi berhasil simpan log -->
     <div id="toast">Log berhasil disimpan!</div>
 
+    <!-- Script utama dashboard -->
     <script>
-      feather.replace();
+      feather.replace(); // Aktifkan ikon Feather
 
+      // Alamat backend Flask
       const backendURL = "http://localhost:5000";
 
+      // Fungsi ambil data dari backend dan update UI
       async function updateData() {
         try {
           const res = await fetch(`${backendURL}/monitor`);
@@ -162,19 +188,20 @@
         }
       }
 
+      // Fungsi update tampilan UI dan warna status
       function updateUI(id, value) {
         const el = document.getElementById(id);
         el.innerText = value;
 
-        // Tambahkan warna status
         el.classList.remove("status-green", "status-yellow", "status-red");
+
         if (
-          value.toLowerCase().includes("terang") ||
-          value.toLowerCase().includes("aktif")
+          value.toLowerCase().includes("hidup 100%") ||
+          value.toLowerCase().includes("terdeteksi")
         ) {
           el.classList.add("status-green");
         } else if (
-          value.toLowerCase().includes("redup") ||
+          value.toLowerCase().includes("hidup") ||
           value.toLowerCase().includes("sedang")
         ) {
           el.classList.add("status-yellow");
@@ -183,6 +210,7 @@
         }
       }
 
+      // Fungsi simpan log ke backend
       function simpanLog() {
         fetch(`${backendURL}/save-log`, { method: "POST" })
           .then((res) => res.json())
@@ -192,14 +220,16 @@
           .catch((err) => alert("❌ Gagal simpan log"));
       }
 
+      // Munculkan notifikasi sukses
       function showToast() {
         const toast = document.getElementById("toast");
         toast.style.display = "block";
         setTimeout(() => (toast.style.display = "none"), 3000);
       }
 
+      // Update data setiap 3 detik
       setInterval(updateData, 3000);
-      updateData();
+      updateData(); // Jalankan saat halaman pertama dibuka
     </script>
   </body>
 </html>
